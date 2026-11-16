@@ -132,3 +132,42 @@ button.ghost,.ag-calhead button,.ag-seg button,.ag-x{background:var(--panel2);co
 .ag-done:hover{filter:brightness(1.1)}
 .ag-done.undo{background:var(--panel);color:var(--text);border:1px solid var(--border)}
 .ag-day>button.ghost{margin-top:6px}
+
+/* ===== Móvil: arreglos de legibilidad y zonas seguras (iPhone) ===== */
+.hero{padding-top:env(safe-area-inset-top,0px)}
+footer{padding-bottom:calc(20px + env(safe-area-inset-bottom,0px))}
+.score{bottom:calc(10px + env(safe-area-inset-bottom,0px))}
+.ag-main{flex:1 1 0;min-width:0}
+h1,h2,h3{overflow-wrap:anywhere}
+.block,.quiz-q,.def,.note{min-width:0}
+@media(max-width:600px){
+  body{font-size:15px}
+  main{padding-left:max(12px,env(safe-area-inset-left,0px));padding-right:max(12px,env(safe-area-inset-right,0px));padding-top:16px}
+  .hero-inner{padding:18px max(12px,env(safe-area-inset-left,0px)) 10px}
+  #tabs{padding-left:max(12px,env(safe-area-inset-left,0px));padding-right:max(12px,env(safe-area-inset-right,0px))}
+  .hero-tools{width:100%}#search{flex:1;width:auto}
+  .block{padding:14px 12px;border-radius:10px}
+  .block>h2{font-size:1.15rem}
+  pre{font-size:.8rem}
+  /* Agenda: el título ocupa toda la fila; insignia y botones pasan debajo */
+  .ag-item{flex-wrap:wrap;align-items:flex-start;gap:6px 10px;padding:10px}
+  .ag-item input[type=checkbox]{margin-top:3px}
+  .ag-main{flex:1 1 calc(100% - 34px)}
+  .ag-badge,.ag-done,.ag-x{margin-left:28px}
+  .ag-badge+.ag-done{margin-left:0}
+  .ag-done+.ag-x{margin-left:0}
+  .ag-fields{grid-template-columns:1fr}
+  .ag-stats{gap:8px}.ag-stat b{font-size:1.4rem}
+  .ag-controls select{width:100%}
+  .ag-calhead h2{font-size:1.05rem}
+  .ag-cell{padding:3px}
+  .opt{padding:10px 12px}
+}
+@media(max-width:600px){
+  .ag-item{display:grid;grid-template-columns:auto auto auto 1fr;gap:8px 10px;align-items:start}
+  .ag-item input[type=checkbox]{grid-column:1;grid-row:1}
+  .ag-main{grid-column:2/-1;grid-row:1;flex:none}
+  .ag-badge{grid-column:2;grid-row:2;margin:0;justify-self:start}
+  .ag-done{grid-column:3;grid-row:2;margin:0}
+  .ag-x{grid-column:4;grid-row:2;margin:0;justify-self:end}
+}

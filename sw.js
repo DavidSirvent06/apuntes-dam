@@ -2,7 +2,7 @@
    - Archivos propios: se sirven de la caché y se actualizan en segundo plano
      (los cambios nuevos se ven al abrir la app una segunda vez).
    - Librerías de CDN (Prism, Mermaid): caché con descarga la primera vez. */
-const CACHE = 'apuntes-dam-v1';
+const CACHE = 'apuntes-dam-v2';
 const LOCAL = [
   './', 'index.html', 'manifest.webmanifest',
   'css/style.css', 'js/app.js', 'js/tareas.js',
