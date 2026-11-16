@@ -23,13 +23,15 @@
   };
 
   // Pestañas
-  tabs.innerHTML = '<button data-id="">🏠 Inicio</button>' + S.map(s => `<button data-id="${s.id}">${s.icon} ${esc(s.name)}</button>`).join('');
+  tabs.innerHTML = '<button data-id="">🏠 Inicio</button><button data-id="agenda">📅 Agenda</button>' + S.map(s => `<button data-id="${s.id}">${s.icon} ${esc(s.name)}</button>`).join('');
   tabs.onclick = e => { const b = e.target.closest('button'); if (b) location.hash = b.dataset.id ? '#/' + b.dataset.id : '#/'; };
 
   function progress(id) { return store.get('quiz:' + id, null); }
 
   function home() {
+    const ag = window.agendaSummary ? window.agendaSummary() : null;
     app.innerHTML = `<div class="block"><h2>Bienvenido, David 👋</h2><p>Elige una asignatura. Cada una tiene introducción, temario paso a paso, trucos de estudio, resumen y un test interactivo.</p></div>
+      ${ag ? `<a class="card" href="#/agenda" style="margin-bottom:14px"><h3 style="margin-top:0">📅 Agenda del curso</h3><p style="margin:0"><b>${ag.pend}</b> tareas pendientes · <b style="color:${ag.late ? 'var(--bad)' : 'inherit'}">${ag.late}</b> vencidas · <b>${ag.week}</b> en los próximos 7 días</p></a>` : ''}
       <div class="grid">${S.map(s => { const p = progress(s.id); return `<a class="card" href="#/${s.id}"><h3 style="margin-top:0">${s.icon} ${esc(s.name)}</h3><small>${esc(s.short || '')}</small><p><small>${p ? '✅ Último test: ' + p.score + '/' + p.total : '📝 Test sin hacer'}</small></p></a>`; }).join('')}</div>`;
   }
 
@@ -85,9 +87,11 @@
   function route() {
     const id = location.hash.replace('#/', '');
     const s = S.find(x => x.id === id);
-    tabs.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.id === (s ? s.id : '')));
+    const isAg = id === 'agenda' && window.renderAgenda;
+    tabs.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.id === (isAg ? 'agenda' : s ? s.id : '')));
+    app.onclick = app.onchange = app.onsubmit = null;
     window.scrollTo(0, 0);
-    s ? subject(s) : home();
+    if (isAg) window.renderAgenda(app); else s ? subject(s) : home();
   }
   $('#search').oninput = e => search(e.target.value);
   window.addEventListener('hashchange', route);
