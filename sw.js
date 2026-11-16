@@ -2,7 +2,7 @@
    - Archivos propios: se sirven de la caché y se actualizan en segundo plano
      (los cambios nuevos se ven al abrir la app una segunda vez).
    - Librerías de CDN (Prism, Mermaid): caché con descarga la primera vez. */
-const CACHE = 'apuntes-dam-v2';
+const CACHE = 'apuntes-dam-v3';
 const LOCAL = [
   './', 'index.html', 'manifest.webmanifest',
   'css/style.css', 'js/app.js', 'js/tareas.js',
@@ -18,7 +18,7 @@ const CDN = [PRISM + 'prism.min.js']
 self.addEventListener('install', e => {
   e.waitUntil((async () => {
     const c = await caches.open(CACHE);
-    await c.addAll(LOCAL);                                         // imprescindible
+    await Promise.all(LOCAL.map(u => c.add(new Request(u, { cache: 'reload' }))));   // imprescindible, saltando la caché HTTP
     await Promise.all(CDN.map(u => c.add(u).catch(() => {})));      // si falla alguna, no se cancela
     await self.skipWaiting();
   })());
@@ -40,7 +40,7 @@ self.addEventListener('fetch', e => {
   e.respondWith((async () => {
     const c = await caches.open(CACHE);
     const hit = await c.match(req, { ignoreSearch: true });
-    const net = fetch(req).then(r => { if (r && (r.ok || r.type === 'opaque')) c.put(req, r.clone()); return r; }).catch(() => null);
+    const net = (url.origin === location.origin ? fetch(req.url, { cache: 'no-cache' }) : fetch(req)).then(r => { if (r && (r.ok || r.type === 'opaque')) c.put(req, r.clone()); return r; }).catch(() => null);
     if (hit) { e.waitUntil(net); return hit; }
     const r = await net;
     if (r) return r;
